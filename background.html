@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Lookup Assistant</title>
+    <script type="text/javascript" src="scripts.js"></script>
+    <script type="text/javascript">
+    chrome.extension.onRequest.addListener(
+        function (request, sender, sendResponse) {
+            "use strict";
+            LUA.settings.clearMenu();
+            LUA.settings.current = request.data;
+            try {
+                LUA.settings.parse(JSON.parse(LUA.settings.current));
+                sendResponse({});
+            } catch (e) {
+                sendResponse({
+                    name: e.name,
+                    message: e.message,
+                    code: e.code
+                });
+            }
+        }
+    );
+    LUA.settings.clearMenu();
+    LUA.settings.current = localStorage.getItem("LUA_Settings");
+    if (!LUA.settings.current) {  // use default if no settings found
+        LUA.settings.current = LUA.settings.defaultSettings();
+        localStorage.setItem("LUA_Settings", LUA.settings.current);
+    }
+    try {
+        LUA.settings.parse(JSON.parse(LUA.settings.current));
+    } catch (e) {  // ignore error
+    }
+    </script>
+</head>
+
+<body>
+</body>
+
+</html>

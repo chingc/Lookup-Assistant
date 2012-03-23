@@ -1,0 +1,15 @@
+{
+    "name": "Lookup Assistant",
+    "version": "1.1",
+
+    "description": "Lookup highlighted text.",
+    "icons": {
+        "16": "monocle_16.png",
+        "48": "monocle_48.png",
+        "128": "monocle_128.png"
+    },
+
+    "background_page": "background.html",
+    "options_page": "options.html",
+    "permissions": ["contextMenus", "tabs"]
+}
