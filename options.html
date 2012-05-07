@@ -31,18 +31,18 @@
     <ol type="a">
         <li><b>Save:</b> Save settings into local storage.<br />&nbsp;</li>
 
-        <li><b>Load:</b> Retrieve settings from local storage.<br />&nbsp;</li>
+        <li><b>Load:</b> Load settings from local storage.<br />&nbsp;</li>
 
-        <li><b>Exec:</b> Execute the current settings shown in the text area without saving.<br />&nbsp;</li>
+        <li><b>Exec:</b> Execute the settings shown in the editor without saving.<br />&nbsp;</li>
 
-        <li><b>Wipe:</b> Delete settings from local storage.  Once deleted, an opportunity will be given to
-        restore the default settings.<br />&nbsp;</li>
+        <li><b>Wipe:</b> Delete settings from local storage.<br />&nbsp;</li>
+
+        <li><b>Default:</b> Restore default settings.<br />&nbsp;</li>
     </ol>
 
     <h2>II. Editing</h2>
     <ol type="a">
-        <li><b>Syntax:</b> Lookup Assistant requires specific formatting for each of its entries.
-        This is done using standard JSON.<br />&nbsp;</li>
+        <li><b>Syntax:</b> Lookup Assistant uses JSON for its menu editor.<br />&nbsp;</li>
 
         <li><b>Overview:</b> Whitespace (spaces, tabs, and newlines) doesn't matter, and can be
         used to make things clearer and more readable.  Lookup Assistant has three types: link,
@@ -72,6 +72,8 @@
     "address": "http://www.google.com/search?q=%s"
 }
 </pre>
+        As stated earlier, whitespace doesn't matter, so you may write this on a single line.
+        <br /><br />
         The opening and closing brace are required.  Each item must be quoted, each key (the item
         to the left of the colon) and its value (the item to the right) must be separated by a
         colon, and a comma separates each key-value pair.  An explanation of each key follows.
@@ -90,7 +92,10 @@
         by the highlighted text.  To find out where the search token goes in a URL, go to a website
         and perform a search to see what the URL looks like.  Copy the URL and replace the search
         term with the token.  Some sites have very long and complex search URLs and may require
-        some effort.<br />&nbsp;</li>
+        some effort.
+        <br /><br />
+        Note: The search token is not required.  If it's left out, Lookup Assistant will simply
+        take you to the address you specify.<br />&nbsp;</li>
 
         <li><b>Menu:</b> This type is used for grouping and organization.  A menu can contain any
         type, even itself.  It looks like this:
@@ -105,7 +110,7 @@
         type.  The "type" and "title" keys also work the same way as they did for links, except
         "type" is not optional here.
         <br /><br />
-        The new key is "entry", and the value is a pair of brackets.  What's place between them
+        The new key is "entry", and the value is a pair of brackets.  What's placed between them
         will determine what appears in this menu.  Links, separators, and even additional menus
         are all valid.  See the link and separator section for proper formatting.<br />&nbsp;</li>
 
@@ -137,7 +142,7 @@
     { "title": "Wikipedia", "address": "http://www.wikipedia.org/wiki/%s" }
 ]
 </pre>
-        You can see in this example that commas not only separate pairs, but they separate the
+        You can see in this example that commas not only separate key-value pairs, but they separate the
         types as well.<br />&nbsp;</li>
 
         <li><b>Two Links + Separator + Menu with Two Links:</b>
@@ -212,6 +217,10 @@
         was specified as the type.  Spelling errors will cause this error, as will improper
         casing.  i.e. link is not the same as Link.<br />&nbsp;</li>
     </ol>
+
+    <hr />
+
+    <p>Copyright (c) 2012, <a href="http://smwst.tumblr.com/tagged/lookup-assistant" target="_blank">Ching Chow</a></p>
 </body>
 
 </html>
