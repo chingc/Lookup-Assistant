@@ -5,6 +5,7 @@
 <head>
     <meta charset="UTF-8" />
     <title>Lookup Assistant Menu Editor</title>
+    <script type="text/javascript" src="jquery-1.7.2.min.js"></script>
     <script type="text/javascript" src="scripts.js"></script>
 </head>
 
@@ -16,60 +17,40 @@
     <button id="save">Save</button>
     <button id="load">Load</button>
     <button id="exec">Exec</button>
-    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
     <button id="wipe">Wipe</button>
-    <p id="status">&nbsp;</p>
-
-    <script type="text/javascript">
-        document.getElementById("editor").value = localStorage.getItem("LUA_Settings");
-        document.getElementById("save").onclick = LUA.button.save;
-        document.getElementById("load").onclick = LUA.button.load;
-        document.getElementById("exec").onclick = LUA.button.exec;
-        document.getElementById("wipe").onclick = LUA.button.wipe;
-        window.onbeforeunload = function () {
-            "use strict";
-            var a = document.getElementById("editor").value,
-                b = localStorage.getItem("LUA_Settings");
-            if (a === "" && b === null) {
-                return;
-            }
-            if (a !== b) {
-                return "Unsaved changes!";
-            }
-            return;
-        };
-    </script>
+    <button id="default">Default</button>
+    <br /><br />
+    <span id="status"></span>
 
     <hr />
 
     <h1>Help</h1>
 
     <h2>I. Buttons</h2>
+    <ol type="a">
+        <li><b>Save:</b> Save settings into local storage.<br />&nbsp;</li>
 
-        <ol type="a">
-            <li><b>Save:</b> Save settings into local storage.<br />&nbsp;</li>
+        <li><b>Load:</b> Retrieve settings from local storage.<br />&nbsp;</li>
 
-            <li><b>Load:</b> Retrieve settings from local storage.<br />&nbsp;</li>
+        <li><b>Exec:</b> Execute the current settings shown in the text area without saving.<br />&nbsp;</li>
 
-            <li><b>Exec:</b> Execute the current settings shown in the text area without saving.<br />&nbsp;</li>
-
-            <li><b>Wipe:</b> Delete settings from local storage.  Once deleted, an opportunity will be given to
-            restore the default settings.<br />&nbsp;</li>
-        </ol>
+        <li><b>Wipe:</b> Delete settings from local storage.  Once deleted, an opportunity will be given to
+        restore the default settings.<br />&nbsp;</li>
+    </ol>
 
     <h2>II. Editing</h2>
+    <ol type="a">
+        <li><b>Syntax:</b> Lookup Assistant requires specific formatting for each of its entries.
+        This is done using standard JSON.<br />&nbsp;</li>
 
-        <ol type="a">
-            <li><b>Syntax:</b> Lookup Assistant requires specific formatting for each of its entries.
-            This is done using standard JSON.<br />&nbsp;</li>
-
-            <li><b>Overview:</b> Whitespace (spaces, tabs, and newlines) doesn't matter, and can be
-            used to make things clearer and more readable.  Lookup Assistant has three types: link,
-            menu, and separator.  A menu can contain any of the three types.  These must all be
-            contained within a pair of brackets.  With the exception of a key's value, everything
-            should be typed in lowercase.  Key-value pairs are explained below.
-            <br /><br />
-            High-level View of Menu Formatting:
+        <li><b>Overview:</b> Whitespace (spaces, tabs, and newlines) doesn't matter, and can be
+        used to make things clearer and more readable.  Lookup Assistant has three types: link,
+        menu, and separator.  A menu can contain any of the three types.  These must all be
+        contained within a pair of brackets.  With the exception of a key's value, everything
+        should be typed in lowercase.  Key-value pairs are explained below.
+        <br /><br />
+        High-level View of Menu Formatting:
 <pre>
 [
     link,
@@ -79,10 +60,10 @@
         link
 ]
 </pre>
-            Format and details of each type are explained below.<br />&nbsp;</li>
+        Format and details of each type are explained below.<br />&nbsp;</li>
 
-            <li><b>Link:</b> This is the most common type.  A link tells Lookup Assistant
-            where it should go and how it should get there.  It's written in this format:
+        <li><b>Link:</b> This is the most common type.  A link tells Lookup Assistant
+        where it should go and how it should get there.  It's written in this format:
 <pre>
 {
     "type": "link",
@@ -91,28 +72,28 @@
     "address": "http://www.google.com/search?q=%s"
 }
 </pre>
-            The opening and closing brace are required.  Each item must be quoted, each key (the item
-            to the left of the colon) and its value (the item to the right) must be separated by a
-            colon, and a comma separates each key-value pair.  An explanation of each key follows.
-            <br /><br />
-            "type": This specifies the type.  It can be "link", "menu", or "separator".  You would,
-            of course, use "link" for links.  However, this key is optional.  The default behavior
-            is "link" if it's omitted.
-            <br /><br />
-            "open": This determines how Lookup Assistant behaves when one of its links is clicked.
-            It can be one of three values: "tab", "window", or "incognito".  This key is optional.
-            The default type is "tab" if it's omitted.
-            <br /><br />
-            "title": The name for this link.
-            <br /><br />
-            "address": The URL with a search token (%s).  The search token will ultimately be replaced
-            by the highlighted text.  To find out where the search token goes in a URL, go to a website
-            and perform a search to see what the URL looks like.  Copy the URL and replace the search
-            term with the token.  Some sites have very long and complex search URLs and may require
-            some effort.<br />&nbsp;</li>
+        The opening and closing brace are required.  Each item must be quoted, each key (the item
+        to the left of the colon) and its value (the item to the right) must be separated by a
+        colon, and a comma separates each key-value pair.  An explanation of each key follows.
+        <br /><br />
+        "type": This specifies the type.  It can be "link", "menu", or "separator".  You would,
+        of course, use "link" for links.  However, this key is optional.  The default behavior
+        is "link" if it's omitted.
+        <br /><br />
+        "open": This determines how Lookup Assistant behaves when one of its links is clicked.
+        It can be one of three values: "tab", "window", or "incognito".  This key is optional.
+        The default type is "tab" if it's omitted.
+        <br /><br />
+        "title": The name for this link.
+        <br /><br />
+        "address": The URL with a search token (%s).  The search token will ultimately be replaced
+        by the highlighted text.  To find out where the search token goes in a URL, go to a website
+        and perform a search to see what the URL looks like.  Copy the URL and replace the search
+        term with the token.  Some sites have very long and complex search URLs and may require
+        some effort.<br />&nbsp;</li>
 
-            <li><b>Menu:</b> This type is used for grouping and organization.  A menu can contain any
-            type, even itself.  It looks like this:
+        <li><b>Menu:</b> This type is used for grouping and organization.  A menu can contain any
+        type, even itself.  It looks like this:
 <pre>
 {
     "type": "menu",
@@ -120,35 +101,34 @@
     "entry": []
 }
 </pre>
-            Regarding braces, quotes, and commas, the same rules apply here as they did with the link
-            type.  The "type" and "title" keys also work the same way as they did for links, except
-            "type" is not optional here.
-            <br /><br />
-            The new key is "entry", and the value is a pair of brackets.  What's place between them
-            will determine what appears in this menu.  Links, separators, and even additional menus
-            are all valid.  See the link and separator section for proper formatting.<br />&nbsp;</li>
+        Regarding braces, quotes, and commas, the same rules apply here as they did with the link
+        type.  The "type" and "title" keys also work the same way as they did for links, except
+        "type" is not optional here.
+        <br /><br />
+        The new key is "entry", and the value is a pair of brackets.  What's place between them
+        will determine what appears in this menu.  Links, separators, and even additional menus
+        are all valid.  See the link and separator section for proper formatting.<br />&nbsp;</li>
 
-            <li><b>Separator:</b> The simplest type.  A separator only has a single key-value pair.
-            Like menus, specifying the type is required.  It looks like this:
+        <li><b>Separator:</b> The simplest type.  A separator only has a single key-value pair.
+        Like menus, specifying the type is required.  It looks like this:
 <pre>
 {
     "type": "separator"
 }
 </pre>
-            Separators will not appear if there is nothing to separate.<br />&nbsp;</li>
-        </ol>
+        Separators will not appear if there is nothing to separate.<br />&nbsp;</li>
+    </ol>
 
     <h2>III. Examples</h2>
-
-        <ol type="a">
-            <li><b>One Link:</b>
+    <ol type="a">
+        <li><b>One Link:</b>
 <pre>
 [
     { "type": "link", "open": "tab", "title": "Google", "address": "http://www.google.com/search?q=%s" }
 ]
 </pre></li>
 
-            <li><b>Three Links + Separator:</b>
+        <li><b>Three Links + Separator:</b>
 <pre>
 [
     { "title": "Google", "address": "http://www.google.com/search?q=%s" },
@@ -157,10 +137,10 @@
     { "title": "Wikipedia", "address": "http://www.wikipedia.org/wiki/%s" }
 ]
 </pre>
-            You can see in this example that commas not only separate pairs, but they separate the
-            types as well.<br />&nbsp;</li>
+        You can see in this example that commas not only separate pairs, but they separate the
+        types as well.<br />&nbsp;</li>
 
-            <li><b>Two Links + Separator + Menu with Two Links:</b>
+        <li><b>Two Links + Separator + Menu with Two Links:</b>
 <pre>
 [
     { "title": "Google", "address": "http://www.google.com/search?q=%s" },
@@ -175,7 +155,7 @@
 ]
 </pre></li>
 
-            <li><b>One Link + Menu with a Menu, Each with One Link:</b>
+        <li><b>One Link + Menu with a Menu, Each with One Link:</b>
 <pre>
 [
     { "type": "menu", "title": "Menu 1", "entry":
@@ -191,92 +171,47 @@
     { "title": "Google", "address": "http://www.google.com/search?q=%s" }
 ]
 </pre>
-            Having many nested menus can get quite confusing!<br />&nbsp;</li>
-        </ol>
+        Having many nested menus can get quite confusing!<br />&nbsp;</li>
+    </ol>
 
     <h2>IV. Errors</h2>
+    <ol type="a">
+        <li><b>SyntaxError:</b> This error means there's something wrong with the JSON formatting.
+        Here are two common syntax errors and what they mean:
+        <br /><br />
+        <ul>
+            <li>Unexpected end of input: The JSON formatting is incomplete.  This may be caused
+            by a missing closing bracket.<br />&nbsp;</li>
 
-        <ol type="a">
-            <li><b>SyntaxError:</b> This error means there's something wrong with the JSON formatting.
-            Here are two common syntax errors and what they mean:
-            <br /><br />
-            <ul>
-                <li>Unexpected end of input: The JSON formatting is incomplete.  This may be caused
-                by a missing closing bracket.<br />&nbsp;</li>
+            <li>Unexpected token X: The X could be a bracket, a brace, or a comma.  Usually, this
+            means there is something missing around X.  Check areas where edits were made.  Make
+            sure all open brackets have a proper closing bracket, and check for correctness in
+            braces and commas.<br />&nbsp;</li>
+        </ul>
+        Checklist:
+        <ul>
+            <li>The very first thing is an open bracket [.</li>
+            <li>The very last thing is a closing bracket ].</li>
+            <li>All keys and values are quoted.</li>
+            <li>Each key and its value is separated by a colon.</li>
+            <li>Each pair is separated by a comma.</li>
+            <li>Types are also separated by a comma.</li>
+            <li>No comma after the last key-value pair.</li>
+            <li>No comma after the last type.</li>
+            <li>Menu entry uses brackets [], not braces {} and not parentheses ().</li>
+        </ul>
+        <br />
+        A good way to avoid these errors is to make small incremental changes and test them with
+        the exec button.  Try not to make large changes all at once because it'll be hard to
+        pinpoint the source of the error.<br />&nbsp;</li>
 
-                <li>Unexpected token X: X could be a bracket, a brace, or a comma.  Usually, this
-                means there is something missing around X.  Check areas where edits were made.  Make
-                sure all open brackets have a proper closing bracket, and check for correctness in
-                braces and commas.<br />&nbsp;</li>
-            </ul>
-            Checklist:
-            <ul>
-                <li>The very first thing is an open bracket [.</li>
-                <li>The very last thing is a closing bracket ].</li>
-                <li>All keys and values are quoted.</li>
-                <li>Each key and its value is separated by a colon.</li>
-                <li>Each pair is separated by a comma.</li>
-                <li>Types are also separated by a comma.</li>
-                <li>No comma after the last key-value pair.</li>
-                <li>No comma after the last type.</li>
-                <li>Menu entry uses brackets [], not braces {} and not parentheses ().</li>
-            </ul>
-            <br />
-            A good way to avoid these errors is to make small incremental changes and test them with
-            the exec button.  Try not to make large changes all at once because it'll be hard to
-            pinpoint the source of the error.<br />&nbsp;</li>
+        <li><b>Missing Property:</b> This error means something was left out.  e.g. Failure to
+        provide an address for the link type.<br />&nbsp;</li>
 
-            <li><b>Missing Property:</b> This error means something was left out.  e.g. Failure to
-            provide an address for the link type.<br />&nbsp;</li>
-
-            <li><b>Unknown Type:</b> This error means something other than link, menu, or separator
-            was specified as the type.  Spelling errors will cause this error, as will improper
-            casing.  i.e. link is not the same as Link.<br />&nbsp;</li>
-        </ol>
-
-    <h2>V. Contact</h2>
-
-        <ol type="a">
-            <li><b>Website:</b> <a href="http://smwst.tumblr.com/" target="_blank">smwst.tumblr.com</a><br />&nbsp;</li>
-        </ol>
-
-    <hr />
-
-<pre>
-Copyright (c) 2012, smwst
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification,
-are permitted provided that the following conditions are met:
-
-    * Redistributions of source code must retain the above copyright notice,
-      this list of conditions and the following disclaimer.
-
-    * Redistributions in binary form must reproduce the above copyright notice,
-      this list of conditions and the following disclaimer in the documentation
-      and/or other materials provided with the distribution.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
-ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-</pre>
-
-    <hr />
-
-    <br />
-    <img src="chrome.png" width="75" height="75" title="Google Chrome" />
-    <img src="html5.png" width="75" height="75" title="HTML5" />
-    &nbsp;
-    <img src="javascript.png" width="75" height="75" title="JavaScript" />
-    &nbsp; &nbsp;
-    <img src="json.gif" width="75" height="75" title="JSON" />
+        <li><b>Unknown Type:</b> This error means something other than link, menu, or separator
+        was specified as the type.  Spelling errors will cause this error, as will improper
+        casing.  i.e. link is not the same as Link.<br />&nbsp;</li>
+    </ol>
 </body>
 
 </html>
