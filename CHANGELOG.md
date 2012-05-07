@@ -1,5 +1,5 @@
 ## 2.0: 2012-05-07
-- Updated for Chrome manifest version 2.
+- Updated to Google Chrome manifest version 2.
 - Removed the dedicated background.html page.
 - Added jQuery and refactored code.
 - Fixed a limitation in which all menu titles had to be unique.
