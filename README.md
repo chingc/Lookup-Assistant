@@ -8,3 +8,11 @@ Custom settings are saved using HTML5 local storage.
 - User customizable menus.
 
 Available for free in the Chrome Web Store.
+
+<br />
+
+[Screenshots][1] | [Download][2] | [Changelog][3]
+
+[1]: http://smwst.tumblr.com/post/19521705717 "Screenshots"
+[2]: https://chrome.google.com/webstore/detail/gffkdmepjpippahnkmhellmgoinojhle "Download"
+[3]: https://github.com/smwst/Lookup-Assistant/blob/master/CHANGELOG.md "Changelog"
