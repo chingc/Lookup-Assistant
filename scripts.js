@@ -14,6 +14,42 @@ const storage = {
     }
 }
 
+const editor = () => {
+    return document.getElementById("editor");
+}
+
+const button = {
+    save: () => {
+        if (confirm("Save settings?")) {
+            settings.current = editor().value;
+            storage.set(settings.current);
+            settings.exec();
+        }
+    },
+    load: () => {
+        if (confirm("Load saved settings?")) {
+            editor().value = storage.get();
+            settings.current = storage.get();
+            settings.exec();
+        }
+    },
+    clear: () => {
+        if (confirm("Clear settings?")) {
+            editor().value = "";
+            settings.current = "";
+            clearMenu();
+        }
+    },
+    default: () => {
+        if (confirm("Load default settings?")) {
+            editor().value = settings.def();
+            settings.current = settings.def();
+            storage.set(settings.current);
+            settings.exec();
+        }
+    }
+}
+
 // the following object contains an object for each menu entry
 // it is keyed by the id as returned by chrome.contextMenus.create()
 // links have two properties: address and title
@@ -93,6 +129,17 @@ var entry = {},
     },
     settings = {
         current: "",
+        exec: () => {
+            clearMenu();
+            settings.current = editor().value;
+            if (settings.current) {  // do not parse if there is no input
+                try {
+                    settings.parse(JSON.parse(settings.current));
+                } catch (e) {
+                    alert('<font color="red">' + e.name + "</font>: " + e.message + (e.code ? "<br />Near Location: " + e.code : ""));
+                }
+            }
+        },    
         error: function (name, message, code) {
             throw {
                 name: name,
@@ -214,52 +261,6 @@ var entry = {},
                 ']                                                                                                                                 \n';
             return d.replace(/ +\n/g, "\n");
         }
-    },
-    gui = {
-        status: function (message) {
-            $("#status").empty();
-            $("<span>" + message + "<br /><br /></span>").prependTo("#status").fadeOut(30000, function () { $(this).remove(); });
-        },
-        save: function () {
-            if (confirm("Save current settings?")) {
-                settings.current = document.getElementById("editor").value;
-                storage.set(settings.current);
-                gui.status("Settings saved.");
-            }
-        },
-        load: function () {
-            if (confirm("Load saved settings?")) {
-                settings.current = storage.get();
-                document.getElementById("editor").value = settings.current;
-                gui.status("Settings restored.");
-            }
-        },
-        exec: function () {
-            clearMenu();
-            settings.current = document.getElementById("editor").value;
-            if (settings.current) {  // do not parse if there is no input
-                try {
-                    settings.parse(JSON.parse(settings.current));
-                    gui.status("No errors.");
-                } catch (e) {
-                    gui.status('<font color="red">' + e.name + "</font>: " + e.message + (e.code ? "<br />Near Location: " + e.code : ""));
-                }
-            }
-        },
-        wipe: function () {
-            if (confirm("Delete saved settings?")) {
-                clearMenu();
-                settings.current = "";
-                storage.delete();
-                gui.status("Settings wiped!");
-            }
-        },
-        def: function () {
-            if (confirm("Load default settings?")) {
-                document.getElementById("editor").value = settings.def();
-                gui.status("Default settings restored.");
-            }
-        }
     };
 
 settings.current = storage.get();
@@ -272,14 +273,12 @@ settings.parse(JSON.parse(settings.current));
 
 if (typeof $ !== "undefined") {
     $(document).ready(function () {
-        document.getElementById("editor").value = settings.current;
-        $("#save").click(gui.save);
-        $("#load").click(gui.load);
-        $("#exec").click(gui.exec);
-        $("#wipe").click(gui.wipe);
-        $("#default").click(gui.def);
+        editor().value = settings.current;
+        for (const key of Object.keys(button)) {
+            document.getElementById(key).addEventListener("click", button[key]);
+        }
         $(window).bind("beforeunload", function () {
-            var a = document.getElementById("editor").value,
+            var a = editor().value,
                 b = storage.get();
             if (a === "" && b === null) {
                 return;
