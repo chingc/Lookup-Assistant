@@ -63,7 +63,6 @@
 <pre>
 {
     "type": "link",
-    "open": "tab",
     "title": "Google",
     "address": "http://www.google.com/search?q=%s"
 }
@@ -77,10 +76,6 @@
         "type": This specifies the type.  It can be "link", "menu", or "separator".  You would,
         of course, use "link" for links.  However, this key is optional.  The default behavior
         is "link" if it's omitted.
-        <br /><br />
-        "open": This determines how Lookup Assistant behaves when one of its links is clicked.
-        It can be one of three values: "tab", "window", or "incognito".  This key is optional.
-        The default type is "tab" if it's omitted.
         <br /><br />
         "title": The name for this link.
         <br /><br />
@@ -125,7 +120,7 @@
         <li><b>One Link:</b>
 <pre>
 [
-    { "type": "link", "open": "tab", "title": "Google", "address": "http://www.google.com/search?q=%s" }
+    { "type": "link", "title": "Google", "address": "http://www.google.com/search?q=%s" }
 ]
 </pre></li>
 

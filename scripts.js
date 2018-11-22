@@ -78,29 +78,15 @@ var entry = {},
         chrome.contextMenus.removeAll();
         entry = {};
     },
-    open = {
-        incognito: function (info, tab) {
-            chrome.windows.create({
-                url: getAddress(info.menuItemId, info.selectionText),
-                incognito: true
-            });
-        },
-        window: function (info, tab) {
-            chrome.windows.create({
-                url: getAddress(info.menuItemId, info.selectionText)
-            });
-        },
-        tab: function (info, tab) {
-            chrome.tabs.create({
-                url: getAddress(info.menuItemId, info.selectionText)
-            });
-        }
-    },
     create = {
-        link: function (address, method, title, parent) {
+        link: function (address, title, parent) {
             var id = chrome.contextMenus.create({
                     contexts: ["selection"],
-                    onclick: (method === "incognito") ? open.incognito : (method === "window") ? open.window : open.tab,
+                    onclick: (info, tab) => {
+                        chrome.tabs.create({
+                            url: getAddress(info.menuItemId, info.selectionText)
+                        })
+                    },
                     parentId: getId(parent),
                     title: title
                 });
@@ -160,7 +146,7 @@ var entry = {},
                     if (error) {
                         settings.error("Missing Property", error, data[i]);
                     }
-                    create.link(data[i].address, data[i].open, data[i].title, parent);
+                    create.link(data[i].address, data[i].title, parent);
                     break;
                 case "menu":
                     error = !data[i].title ? "Title required for menus." : !data[i].entry ? "Entry required for menus." : false;
