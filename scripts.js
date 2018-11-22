@@ -1,4 +1,19 @@
 "use strict";
+
+
+const storage = {
+    key: "LUA_Settings",
+    delete: () => {
+        localStorage.removeItem(storage.key);
+    },
+    get: () => {
+        return localStorage.getItem(storage.key);
+    },
+    set: (data) => {
+        localStorage.setItem(storage.key, data);
+    }
+}
+
 // the following object contains an object for each menu entry
 // it is keyed by the id as returned by chrome.contextMenus.create()
 // links have two properties: address and title
@@ -207,25 +222,24 @@ var entry = {},
         },
         save: function () {
             if (confirm("Save current settings?")) {
-                settings.current = $("#editor").val();
-                localStorage.setItem("LUA_Settings", settings.current);
+                settings.current = document.getElementById("editor").value;
+                storage.set(settings.current);
                 gui.status("Settings saved.");
             }
         },
         load: function () {
             if (confirm("Load saved settings?")) {
-                settings.current = localStorage.getItem("LUA_Settings");
-                $("#editor").val(settings.current);
+                settings.current = storage.get();
+                document.getElementById("editor").value = settings.current;
                 gui.status("Settings restored.");
             }
         },
         exec: function () {
             clearMenu();
-            settings.current = $("#editor").val().trim();
+            settings.current = document.getElementById("editor").value;
             if (settings.current) {  // do not parse if there is no input
                 try {
                     settings.parse(JSON.parse(settings.current));
-                    localStorage.setItem("LUA_Temp", settings.current);
                     gui.status("No errors.");
                 } catch (e) {
                     gui.status('<font color="red">' + e.name + "</font>: " + e.message + (e.code ? "<br />Near Location: " + e.code : ""));
@@ -236,37 +250,37 @@ var entry = {},
             if (confirm("Delete saved settings?")) {
                 clearMenu();
                 settings.current = "";
-                localStorage.removeItem("LUA_Settings");
+                storage.delete();
                 gui.status("Settings wiped!");
             }
         },
         def: function () {
             if (confirm("Load default settings?")) {
-                $("#editor").val(settings.def());
+                document.getElementById("editor").value = settings.def();
                 gui.status("Default settings restored.");
             }
         }
     };
 
-settings.current = localStorage.getItem("LUA_Temp") || localStorage.getItem("LUA_Settings");
+settings.current = storage.get();
 if (!settings.current) {  // use default if no settings found
     settings.current = settings.def();
-    localStorage.setItem("LUA_Settings", settings.current);
+    storage.set(settings.current);
 }
 clearMenu();
 settings.parse(JSON.parse(settings.current));
 
 if (typeof $ !== "undefined") {
     $(document).ready(function () {
-        $("#editor").val(settings.current);
+        document.getElementById("editor").value = settings.current;
         $("#save").click(gui.save);
         $("#load").click(gui.load);
         $("#exec").click(gui.exec);
         $("#wipe").click(gui.wipe);
         $("#default").click(gui.def);
         $(window).bind("beforeunload", function () {
-            var a = $("#editor").val(),
-                b = localStorage.getItem("LUA_Settings");
+            var a = document.getElementById("editor").value,
+                b = storage.get();
             if (a === "" && b === null) {
                 return;
             }
@@ -274,9 +288,6 @@ if (typeof $ !== "undefined") {
                 return "Unsaved changes!";
             }
             return;
-        });
-        $(window).unload(function () {
-            localStorage.removeItem("LUA_Temp");
         });
     });
 }
