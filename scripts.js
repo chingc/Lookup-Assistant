@@ -1,7 +1,6 @@
 (function () {
     "use strict";
 
-
     const storage = {
         key: "LUA_Settings",
         delete: () => localStorage.removeItem(storage.key),
@@ -30,7 +29,7 @@
             if (confirm("Clear settings?")) {
                 editor().value = "";
                 settings.current = "";
-                clearMenu();
+                menu.clear();
             }
         },
         default: () => {
@@ -43,59 +42,45 @@
         }
     };
 
+    const menu = {
+        id: {},  // track the ID of submenus
+        clear: () => {
+            chrome.contextMenus.removeAll();
+            menu.id = {};
+        },
+        link: (address, title, parent) => {
+            chrome.contextMenus.create({
+                contexts: ["selection"],
+                parentId: menu.id[parent],
+                title: title,
+                onclick: (info) => chrome.tabs.create({ url: address.replace("%s", info.selectionText.trim()) })
+            });
+        },
+        separator: (parent) => {
+            chrome.contextMenus.create({
+                contexts: ["selection"],
+                parentId: menu.id[parent],
+                type: "separator"
+            });
+        },
+        submenu: (title, parent) => {
+            menu.id[title] = chrome.contextMenus.create({
+                contexts: ["selection"],
+                parentId: menu.id[parent],
+                title: title
+            });
+        }
+    };
+
     // the following object contains an object for each menu entry
     // it is keyed by the id as returned by chrome.contextMenus.create()
     // links have two properties: address and title
     // menus have one property: title
     // separators are not included
-    var entry = {},
-        getAddress = (id, text) => entry[id].address.replace("%s", text.trim()),
-        getId = (title) => {
-            for (const key of Object.keys(entry)) {
-                if (entry[key].title === title) {
-                    return parseInt(key, 10);
-                }
-            }
-        },
-        clearMenu = () => {
-            chrome.contextMenus.removeAll();
-            entry = {};
-        },
-        create = {
-            link: (address, title, parent) => {
-                const id = chrome.contextMenus.create({
-                    contexts: ["selection"],
-                    onclick: (info) => chrome.tabs.create({ url: getAddress(info.menuItemId, info.selectionText) }),
-                    parentId: getId(parent),
-                    title: title
-                });
-                entry[id] = {
-                    address: address,
-                    title: title
-                };
-            },
-            menu: (title, parent) => {
-                const id = chrome.contextMenus.create({
-                    contexts: ["selection"],
-                    parentId: getId(parent),
-                    title: title
-                });
-                entry[id] = {
-                    title: title
-                };
-            },
-            separator: (parent) => {
-                chrome.contextMenus.create({
-                    contexts: ["selection"],
-                    parentId: getId(parent),
-                    type: "separator"
-                });
-            }
-        },
-        settings = {
+    var settings = {
             current: "",
             exec: () => {
-                clearMenu();
+                menu.clear();
                 settings.current = editor().value;
                 if (settings.current) {  // do not parse if there is no input
                     try {
@@ -124,18 +109,18 @@
                         if (error) {
                             settings.error("Missing Property", error, data[i]);
                         }
-                        create.link(data[i].address, data[i].title, parent);
+                        menu.link(data[i].address, data[i].title, parent);
                         break;
                     case "menu":
                         error = !data[i].title ? "Title required for menus." : !data[i].entry ? "Entry required for menus." : false;
                         if (error) {
                             settings.error("Missing Property", error, data[i]);
                         }
-                        create.menu(data[i].title, parent);
+                        menu.submenu(data[i].title, parent);
                         settings.parse(data[i].entry, data[i].title);
                         break;
                     case "separator":
-                        create.separator(parent);
+                        menu.separator(parent);
                         break;
                     default:
                         settings.error("Unknown Type", "Valid types are link, menu, and separator.", data[i]);
