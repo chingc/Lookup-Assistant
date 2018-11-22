@@ -181,84 +181,75 @@ var entry = {},
         },
         def: function () {
             var d =
-                '[                                                                                                                                 \n' +
-                '    { "title": "Google",        "address": "http://www.google.com/search?q=%s" },                                                 \n' +
-                '    { "title": "Google Images", "address": "http://www.google.com/search?tbm=isch&q=%s" },                                        \n' +
-                '                                                                                                                                  \n' +
-                '    { "type": "menu", "title": "More", "entry":                                                                                   \n' +
-                '        [                                                                                                                         \n' +
-                '            { "title": "Bing",   "address": "http://www.bing.com/search?q=%s" },                                                  \n' +
-                '            { "title": "Yahoo!", "address": "http://search.yahoo.com/search?p=%s" }                                               \n' +
-                '        ]                                                                                                                         \n' +
-                '    },                                                                                                                            \n' +
-                '                                                                                                                                  \n' +
-                '    { "type": "separator" },                                                                                                      \n' +
-                '                                                                                                                                  \n' +
-                '    { "title": "Dictionary.com",   "address": "http://dictionary.reference.com/browse/%s" },                                      \n' +
-                '    { "title": "Thesaurus.com",    "address": "http://thesaurus.com/browse/%s" },                                                 \n' +
-                '    { "title": "Urban Dictionary", "address": "http://www.urbandictionary.com/define.php?term=%s" },                              \n' +
-                '    { "title": "Wikipedia",        "address": "http://www.wikipedia.org/wiki/%s" },                                               \n' +
-                '                                                                                                                                  \n' +
-                '    { "type": "separator" },                                                                                                      \n' +
-                '                                                                                                                                  \n' +
-                '    { "title": "Amazon", "address": "http://www.amazon.com/s/field-keywords=%s" },                                                \n' +
-                '    { "title": "eBay",   "address": "http://www.ebay.com/sch/i.html?_nkw=%s" },                                                   \n' +
-                '                                                                                                                                  \n' +
-                '    { "type": "separator" },                                                                                                      \n' +
-                '                                                                                                                                  \n' +
-                '    { "title": "YouTube",                "address": "http://www.youtube.com/results?search_query=%s" },                           \n' +
-                '    { "title": "YouTube (VideoID)",      "address": "http://www.youtube.com/watch?v=%s" },                                        \n' +
-                '    { "title": "EndlessVideo (VideoID)", "address": "http://www.endlessvideo.com/watch?v=%s" },                                   \n' +
-                '                                                                                                                                  \n' +
-                '    { "type": "separator" },                                                                                                      \n' +
-                '                                                                                                                                  \n' +
-                '    { "type": "menu", "title": "To English", "entry":                                                                             \n' +
-                '        [                                                                                                                         \n' +
-                '            { "title": "Chinese",  "address": "http://translate.google.com/#zh-CN|en|%s" },                                       \n' +
-                '            { "title": "Japanese", "address": "http://translate.google.com/#ja|en|%s" },                                          \n' +
-                '            { "title": "Korean",   "address": "http://translate.google.com/#ko|en|%s" }                                           \n' +
-                '        ]                                                                                                                         \n' +
-                '    },                                                                                                                            \n' +
-                '    { "type": "menu", "title": "From English", "entry":                                                                           \n' +
-                '        [                                                                                                                         \n' +
-                '            { "title": "Chinese (Simplified)",  "address": "http://translate.google.com/#en|zh-CN|%s" },                          \n' +
-                '            { "title": "Chinese (Traditional)", "address": "http://translate.google.com/#en|zh-TW|%s" },                          \n' +
-                '            { "title": "Japanese",              "address": "http://translate.google.com/#en|ja|%s" },                             \n' +
-                '            { "title": "Korean",                "address": "http://translate.google.com/#en|ko|%s" }                              \n' +
-                '        ]                                                                                                                         \n' +
-                '    },                                                                                                                            \n' +
-                '                                                                                                                                  \n' +
-                '    { "type": "separator" },                                                                                                      \n' +
-                '                                                                                                                                  \n' +
-                '    { "type": "menu", "title": "To USD", "entry":                                                                                 \n' +
-                '        [                                                                                                                         \n' +
-                '            { "title": "CAD: Canadian Dollar",        "address": "http://www.google.com/finance/converter?a=%s&from=CAD&to=USD" },\n' +
-                '            { "title": "CNY: Chinese Yuan",           "address": "http://www.google.com/finance/converter?a=%s&from=CNY&to=USD" },\n' +
-                '            { "title": "GBP: British Pound Sterling", "address": "http://www.google.com/finance/converter?a=%s&from=GBP&to=USD" },\n' +
-                '            { "title": "EUR: Euro",                   "address": "http://www.google.com/finance/converter?a=%s&from=EUR&to=USD" },\n' +
-                '            { "title": "JPY: Japanese Yen",           "address": "http://www.google.com/finance/converter?a=%s&from=JPY&to=USD" },\n' +
-                '            { "title": "KRW: South Korean Won",       "address": "http://www.google.com/finance/converter?a=%s&from=KRW&to=USD" } \n' +
-                '        ]                                                                                                                         \n' +
-                '    },                                                                                                                            \n' +
-                '    { "type": "menu", "title": "From USD", "entry":                                                                               \n' +
-                '        [                                                                                                                         \n' +
-                '            { "title": "CAD: Canadian Dollar",        "address": "http://www.google.com/finance/converter?a=%s&from=USD&to=CAD" },\n' +
-                '            { "title": "CNY: Chinese Yuan",           "address": "http://www.google.com/finance/converter?a=%s&from=USD&to=CNY" },\n' +
-                '            { "title": "GBP: British Pound Sterling", "address": "http://www.google.com/finance/converter?a=%s&from=USD&to=GBP" },\n' +
-                '            { "title": "EUR: Euro",                   "address": "http://www.google.com/finance/converter?a=%s&from=USD&to=EUR" },\n' +
-                '            { "title": "JPY: Japanese Yen",           "address": "http://www.google.com/finance/converter?a=%s&from=USD&to=JPY" },\n' +
-                '            { "title": "KRW: South Korean Won",       "address": "http://www.google.com/finance/converter?a=%s&from=USD&to=KRW" } \n' +
-                '        ]                                                                                                                         \n' +
-                '    },                                                                                                                            \n' +
-                '                                                                                                                                  \n' +
-                '    { "type": "separator" },                                                                                                      \n' +
-                '                                                                                                                                  \n' +
-                '    { "type": "menu", "title": "Schemes", "entry":                                                                                \n' +
-                '        [                                                                                                                         \n' +
-                '            { "title": "mailto", "address": "mailto:%s" }                                                                         \n' +
-                '        ]                                                                                                                         \n' +
-                '    }                                                                                                                             \n' +
-                ']                                                                                                                                 \n';
+                '[                                                                                                                 \n' +
+                '    { "title": "Google", "address": "http://www.google.com/search?q=%s" },                                        \n' +
+                '    { "title": "Bing",   "address": "http://www.bing.com/search?q=%s" },                                          \n' +
+                '    { "title": "Yahoo!", "address": "http://search.yahoo.com/search?p=%s" },                                      \n' +
+                '                                                                                                                  \n' +
+                '    { "type": "separator" },                                                                                      \n' +
+                '                                                                                                                  \n' +
+                '    { "title": "Wikipedia",        "address": "http://www.wikipedia.org/wiki/%s" },                               \n' +
+                '    { "title": "Dictionary.com",   "address": "http://dictionary.reference.com/browse/%s" },                      \n' +
+                '    { "title": "Urban Dictionary", "address": "http://www.urbandictionary.com/define.php?term=%s" },              \n' +
+                '                                                                                                                  \n' +
+                '    { "type": "separator" },                                                                                      \n' +
+                '                                                                                                                  \n' +
+                '    { "title": "Amazon", "address": "http://www.amazon.com/s/field-keywords=%s" },                                \n' +
+                '    { "title": "eBay",   "address": "http://www.ebay.com/sch/i.html?_nkw=%s" },                                   \n' +
+                '                                                                                                                  \n' +
+                '    { "type": "separator" },                                                                                      \n' +
+                '                                                                                                                  \n' +
+                '    { "title": "YouTube", "address": "http://www.youtube.com/results?search_query=%s" },                          \n' +
+                '                                                                                                                  \n' +
+                '    { "type": "separator" },                                                                                      \n' +
+                '                                                                                                                  \n' +
+                '    { "type": "menu", "title": "to English from...", "entry":                                                     \n' +
+                '        [                                                                                                         \n' +
+                '            { "title": "Chinese",  "address": "http://translate.google.com/#zh-CN|en|%s" },                       \n' +
+                '            { "title": "Japanese", "address": "http://translate.google.com/#ja|en|%s" },                          \n' +
+                '            { "title": "Korean",   "address": "http://translate.google.com/#ko|en|%s" }                           \n' +
+                '        ]                                                                                                         \n' +
+                '    },                                                                                                            \n' +
+                '    { "type": "menu", "title": "from English to...", "entry":                                                     \n' +
+                '        [                                                                                                         \n' +
+                '            { "title": "Chinese (Simplified)",  "address": "http://translate.google.com/#en|zh-CN|%s" },          \n' +
+                '            { "title": "Chinese (Traditional)", "address": "http://translate.google.com/#en|zh-TW|%s" },          \n' +
+                '            { "title": "Japanese",              "address": "http://translate.google.com/#en|ja|%s" },             \n' +
+                '            { "title": "Korean",                "address": "http://translate.google.com/#en|ko|%s" }              \n' +
+                '        ]                                                                                                         \n' +
+                '    },                                                                                                            \n' +
+                '                                                                                                                  \n' +
+                '    { "type": "separator" },                                                                                      \n' +
+                '                                                                                                                  \n' +
+                '    { "type": "menu", "title": "to USD from...", "entry":                                                         \n' +
+                '        [                                                                                                         \n' +
+                '            { "title": "CAD: Canadian Dollar",        "address": "http://www.google.com/search?q=%s+CAD+to+USD" },\n' +
+                '            { "title": "CNY: Chinese Yuan",           "address": "http://www.google.com/search?q=%s+CNY+to+USD" },\n' +
+                '            { "title": "GBP: British Pound Sterling", "address": "http://www.google.com/search?q=%s+GBP+to+USD" },\n' +
+                '            { "title": "EUR: Euro",                   "address": "http://www.google.com/search?q=%s+EUR+to+USD" },\n' +
+                '            { "title": "JPY: Japanese Yen",           "address": "http://www.google.com/search?q=%s+JPY+to+USD" },\n' +
+                '            { "title": "KRW: South Korean Won",       "address": "http://www.google.com/search?q=%s+KRW+to+USD" } \n' +
+                '        ]                                                                                                         \n' +
+                '    },                                                                                                            \n' +
+                '    { "type": "menu", "title": "from USD to...", "entry":                                                         \n' +
+                '        [                                                                                                         \n' +
+                '            { "title": "CAD: Canadian Dollar",        "address": "http://www.google.com/search?q=%s+USD+to+CAD" },\n' +
+                '            { "title": "CNY: Chinese Yuan",           "address": "http://www.google.com/search?q=%s+USD+to+CNY" },\n' +
+                '            { "title": "GBP: British Pound Sterling", "address": "http://www.google.com/search?q=%s+USD+to+GBP" },\n' +
+                '            { "title": "EUR: Euro",                   "address": "http://www.google.com/search?q=%s+USD+to+EUR" },\n' +
+                '            { "title": "JPY: Japanese Yen",           "address": "http://www.google.com/search?q=%s+USD+to+JPY" },\n' +
+                '            { "title": "KRW: South Korean Won",       "address": "http://www.google.com/search?q=%s+USD+to+KRW" } \n' +
+                '        ]                                                                                                         \n' +
+                '    },                                                                                                            \n' +
+                '                                                                                                                  \n' +
+                '    { "type": "separator" },                                                                                      \n' +
+                '                                                                                                                  \n' +
+                '    { "type": "menu", "title": "Schemes", "entry":                                                                \n' +
+                '        [                                                                                                         \n' +
+                '            { "title": "mailto", "address": "mailto:%s" }                                                         \n' +
+                '        ]                                                                                                         \n' +
+                '    }                                                                                                             \n' +
+                ']                                                                                                                 \n';
             return d.replace(/ +\n/g, "\n");
         }
     };
