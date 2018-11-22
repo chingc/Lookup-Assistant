@@ -3,20 +3,12 @@
 
 const storage = {
     key: "LUA_Settings",
-    delete: () => {
-        localStorage.removeItem(storage.key);
-    },
-    get: () => {
-        return localStorage.getItem(storage.key);
-    },
-    set: (data) => {
-        localStorage.setItem(storage.key, data);
-    }
-}
+    delete: () => localStorage.removeItem(storage.key),
+    get: () => localStorage.getItem(storage.key),
+    set: (data) => localStorage.setItem(storage.key, data)
+};
 
-const editor = () => {
-    return document.getElementById("editor");
-}
+const editor = () => document.getElementById("editor");
 
 const button = {
     save: () => {
@@ -48,7 +40,7 @@ const button = {
             settings.exec();
         }
     }
-}
+};
 
 // the following object contains an object for each menu entry
 // it is keyed by the id as returned by chrome.contextMenus.create()
@@ -56,56 +48,42 @@ const button = {
 // menus have one property: title
 // separators are not included
 var entry = {},
-    getAddress = function (id, highlighted) {
-        var currency = /^(\d{1,3}(\,\d{3})*|\d+)(\.\d{1,2})?$/,
-            stripped = highlighted.trim();
-        if (currency.test(stripped)) {
-            stripped = stripped.replace(/[,]/g, "");
-        }
-        return entry[id].address.replace("%s", stripped);
-    },
-    getId = function (title) {
-        var key;
-        for (key in entry) {
-            if (entry.hasOwnProperty(key)) {
-                if (entry[key].title === title) {
-                    return parseInt(key, 10);
-                }
+    getAddress = (id, text) => entry[id].address.replace("%s", text.trim()),
+    getId = (title) => {
+        for (const key of Object.keys(entry)) {
+            if (entry[key].title === title) {
+                return parseInt(key, 10);
             }
         }
     },
-    clearMenu = function () {
+    clearMenu = () => {
         chrome.contextMenus.removeAll();
         entry = {};
     },
     create = {
-        link: function (address, title, parent) {
-            var id = chrome.contextMenus.create({
-                    contexts: ["selection"],
-                    onclick: (info, tab) => {
-                        chrome.tabs.create({
-                            url: getAddress(info.menuItemId, info.selectionText)
-                        })
-                    },
-                    parentId: getId(parent),
-                    title: title
-                });
+        link: (address, title, parent) => {
+            const id = chrome.contextMenus.create({
+                contexts: ["selection"],
+                onclick: (info) => chrome.tabs.create({ url: getAddress(info.menuItemId, info.selectionText) }),
+                parentId: getId(parent),
+                title: title
+            });
             entry[id] = {
                 address: address,
                 title: title
             };
         },
-        menu: function (title, parent, random) {
-            var id = chrome.contextMenus.create({
-                    contexts: ["selection"],
-                    parentId: getId(parent),
-                    title: title
-                });
+        menu: (title, parent) => {
+            const id = chrome.contextMenus.create({
+                contexts: ["selection"],
+                parentId: getId(parent),
+                title: title
+            });
             entry[id] = {
-                title: title + random
+                title: title
             };
         },
-        separator: function (parent) {
+        separator: (parent) => {
             chrome.contextMenus.create({
                 contexts: ["selection"],
                 parentId: getId(parent),
@@ -135,7 +113,6 @@ var entry = {},
         },
         parse: function (data, parent) {
             var error = false,
-                random,
                 i,
                 ilen;
             for (i = 0, ilen = data.length; i < ilen; i += 1) {
@@ -153,9 +130,8 @@ var entry = {},
                     if (error) {
                         settings.error("Missing Property", error, data[i]);
                     }
-                    random = Math.floor(Math.random() * 1000);
-                    create.menu(data[i].title, parent, random);
-                    settings.parse(data[i].entry, data[i].title + random);
+                    create.menu(data[i].title, parent);
+                    settings.parse(data[i].entry, data[i].title);
                     break;
                 case "separator":
                     create.separator(parent);
@@ -256,4 +232,4 @@ document.onreadystatechange = () => {
             }
         };
     }
-}
+};
