@@ -139,7 +139,7 @@ var entry = {},
                     alert('<font color="red">' + e.name + "</font>: " + e.message + (e.code ? "<br />Near Location: " + e.code : ""));
                 }
             }
-        },    
+        },
         error: function (name, message, code) {
             throw {
                 name: name,
@@ -263,30 +263,20 @@ var entry = {},
         }
     };
 
-settings.current = storage.get();
-if (!settings.current) {  // use default if no settings found
-    settings.current = settings.def();
-    storage.set(settings.current);
-}
-clearMenu();
-settings.parse(JSON.parse(settings.current));
+document.onreadystatechange = () => {
+    if (document.title.includes("Lookup Assistant") && document.readyState !== "loading") {
+        editor().value = storage.get();
+        settings.exec();
 
-if (typeof $ !== "undefined") {
-    $(document).ready(function () {
-        editor().value = settings.current;
         for (const key of Object.keys(button)) {
-            document.getElementById(key).addEventListener("click", button[key]);
+            document.getElementById(key).onclick = button[key];
         }
-        $(window).bind("beforeunload", function () {
-            var a = editor().value,
-                b = storage.get();
-            if (a === "" && b === null) {
-                return;
+
+        window.onbeforeunload = (event) => {
+            if (editor().value !== storage.get()) {
+                event.preventDefault();
+                event.returnValue = "There are unsaved changes!";
             }
-            if (a !== b) {
-                return "Unsaved changes!";
-            }
-            return;
-        });
-    });
+        };
+    }
 }
