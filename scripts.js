@@ -227,9 +227,6 @@
                     try {
                         settings.parse(JSON.parse(settings.current));
                         localStorage.setItem("LUA_Temp", settings.current);
-                        chrome.extension.sendRequest({
-                            reload: true
-                        });
                         gui.status("No errors.");
                     } catch (e) {
                         gui.status('<font color="red">' + e.name + "</font>: " + e.message + (e.code ? "<br />Near Location: " + e.code : ""));
@@ -281,9 +278,6 @@
             });
             $(window).unload(function () {
                 localStorage.removeItem("LUA_Temp");
-                chrome.extension.sendRequest({
-                    reload: true
-                });
             });
         });
     }
