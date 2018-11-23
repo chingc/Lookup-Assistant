@@ -15,8 +15,6 @@
     <br />
     <button id="save">Save</button>
     <button id="load">Load</button>
-    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-    <button id="clear">Clear</button>
     <button id="default">Default</button>
 
     <br /><br />
@@ -28,10 +26,6 @@
         <li><b>Save:</b> Save settings into local storage.<br />&nbsp;</li>
 
         <li><b>Load:</b> Load settings from local storage.<br />&nbsp;</li>
-
-        <li><b>Exec:</b> Execute the settings shown in the editor without saving.<br />&nbsp;</li>
-
-        <li><b>Wipe:</b> Delete settings from local storage.<br />&nbsp;</li>
 
         <li><b>Default:</b> Restore default settings.<br />&nbsp;</li>
     </ol>
@@ -94,14 +88,14 @@
 {
     "type": "menu",
     "title": "Additional Links",
-    "entry": []
+    "entries": []
 }
 </pre>
         Regarding braces, quotes, and commas, the same rules apply here as they did with the link
         type.  The "type" and "title" keys also work the same way as they did for links, except
         "type" is not optional here.
         <br /><br />
-        The new key is "entry", and the value is a pair of brackets.  What's placed between them
+        The new key is "entries", and the value is a pair of brackets.  What's placed between them
         will determine what appears in this menu.  Links, separators, and even additional menus
         are all valid.  See the link and separator section for proper formatting.<br />&nbsp;</li>
 
@@ -142,7 +136,7 @@
     { "title": "Google", "address": "http://www.google.com/search?q=%s" },
     { "title": "Google Images", "address": "http://www.google.com/search?tbm=isch&amp;q=%s" },
     { "type": "separator" },
-    { "type": "menu", "title": "Menu 1", "entry":
+    { "type": "menu", "title": "Menu 1", "entries":
         [
             { "title": "Amazon", "address": "http://www.amazon.com/s/field-keywords=%s" },
             { "title": "eBay", "address": "http://www.ebay.com/sch/i.html?_nkw=%s" }
@@ -154,9 +148,9 @@
         <li><b>One Link + Menu with a Menu, Each with One Link:</b>
 <pre>
 [
-    { "type": "menu", "title": "Menu 1", "entry":
+    { "type": "menu", "title": "Menu 1", "entries":
         [
-            { "type": "menu", "title": "Menu 2", "entry":
+            { "type": "menu", "title": "Menu 2", "entries":
                 [
                     { "title": "Amazon", "address": "http://www.amazon.com/s/field-keywords=%s" }
                 ]
@@ -194,7 +188,7 @@
             <li>Types are also separated by a comma.</li>
             <li>No comma after the last key-value pair.</li>
             <li>No comma after the last type.</li>
-            <li>Menu entry uses brackets [], not braces {} and not parentheses ().</li>
+            <li>Menu entries uses brackets [], not braces {} and not parentheses ().</li>
         </ul>
         <br />
         A good way to avoid these errors is to make small incremental changes and test them with
@@ -211,7 +205,7 @@
 
     <hr />
 
-    <p>Copyright (c) 2012, <a href="http://smwst.tumblr.com/tagged/lookup-assistant" target="_blank">Ching Chow</a></p>
+    <p>Copyright (c) 2018, <a href="https://github.com/chingc/Lookup-Assistant" target="_blank">Ching Chow</a></p>
 </body>
 
 </html>

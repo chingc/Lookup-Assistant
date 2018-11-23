@@ -1,43 +1,33 @@
 (function () {
     "use strict";
 
+    const doc = (id) => document.getElementById(id);
+    
     const storage = {
         key: "LUA_Settings",
-        delete: () => localStorage.removeItem(storage.key),
         get: () => localStorage.getItem(storage.key),
         set: (data) => localStorage.setItem(storage.key, data)
     };
 
-    const editor = () => document.getElementById("editor");
-
     const button = {
         save: () => {
             if (confirm("Save settings?")) {
-                settings.current = editor().value;
-                storage.set(settings.current);
-                settings.exec();
+                if (settings.parse()) {
+                    storage.set(doc("editor").value);
+                }
             }
         },
         load: () => {
             if (confirm("Load saved settings?")) {
-                editor().value = storage.get();
-                settings.current = storage.get();
-                settings.exec();
-            }
-        },
-        clear: () => {
-            if (confirm("Clear settings?")) {
-                editor().value = "";
-                settings.current = "";
-                menu.clear();
+                doc("editor").value = storage.get();
+                settings.parse();
             }
         },
         default: () => {
             if (confirm("Load default settings?")) {
-                editor().value = settings.def();
-                settings.current = settings.def();
-                storage.set(settings.current);
-                settings.exec();
+                storage.set(defaults);
+                doc("editor").value = defaults;
+                settings.parse();
             }
         }
     };
@@ -72,147 +62,130 @@
         }
     };
 
-    // the following object contains an object for each menu entry
-    // it is keyed by the id as returned by chrome.contextMenus.create()
-    // links have two properties: address and title
-    // menus have one property: title
-    // separators are not included
-    var settings = {
-            current: "",
-            exec: () => {
+    const settings = {
+        parse: () => {
+            try {
                 menu.clear();
-                settings.current = editor().value;
-                if (settings.current) {  // do not parse if there is no input
-                    try {
-                        settings.parse(JSON.parse(settings.current));
-                    } catch (e) {
-                        alert('<font color="red">' + e.name + "</font>: " + e.message + (e.code ? "<br />Near Location: " + e.code : ""));
-                    }
+                let text = doc("editor").value;
+                if (!text || settings._parse(JSON.parse(text))) {
+                    return true;
                 }
-            },
-            error: function (name, message, code) {
-                throw {
-                    name: name,
-                    message: message,
-                    code: JSON.stringify(code)
-                };
-            },
-            parse: function (data, parent) {
-                var error = false,
-                    i,
-                    ilen;
-                for (i = 0, ilen = data.length; i < ilen; i += 1) {
-                    switch (data[i].type) {
+            } catch (e) {
+                alert(`${e.name}: ${e.message}`);
+            }
+            return false;
+        },
+        _parse: (rows, parent) => {
+            for (let row of rows) {
+                let error = false;
+                switch (row.type) {
                     case undefined:  // default to "link" type if not specified
                     case "link":
-                        error = !data[i].title ? "Title required for links." : !data[i].address ? "Address required for links." : false;
+                        error = !row.title ? "Title required for links." : !row.address ? "Address required for links." : false;
                         if (error) {
-                            settings.error("Missing Property", error, data[i]);
+                            throw { name: "Missing Property", message: `${error}\n${JSON.stringify(row)}` };
                         }
-                        menu.link(data[i].address, data[i].title, parent);
+                        menu.link(row.address, row.title, parent);
                         break;
                     case "menu":
-                        error = !data[i].title ? "Title required for menus." : !data[i].entry ? "Entry required for menus." : false;
+                        error = !row.title ? "Title required for menus." : !row.entries ? "One or more entries required for menus." : false;
                         if (error) {
-                            settings.error("Missing Property", error, data[i]);
+                            throw { name: "Missing Property", message: `${error}\n${JSON.stringify(row)}` };
                         }
-                        menu.submenu(data[i].title, parent);
-                        settings.parse(data[i].entry, data[i].title);
+                        menu.submenu(row.title, parent);
+                        settings._parse(row.entries, row.title);
                         break;
                     case "separator":
                         menu.separator(parent);
                         break;
                     default:
-                        settings.error("Unknown Type", "Valid types are link, menu, and separator.", data[i]);
-                    }
+                        throw { name: "Unknown Type", message: `Valid types are link, menu, and separator.\n${JSON.stringify(row)}` };
                 }
-            },
-            def: function () {
-                var d =
-                    '[                                                                                                                 \n' +
-                    '    { "title": "Google", "address": "http://www.google.com/search?q=%s" },                                        \n' +
-                    '    { "title": "Bing",   "address": "http://www.bing.com/search?q=%s" },                                          \n' +
-                    '    { "title": "Yahoo!", "address": "http://search.yahoo.com/search?p=%s" },                                      \n' +
-                    '                                                                                                                  \n' +
-                    '    { "type": "separator" },                                                                                      \n' +
-                    '                                                                                                                  \n' +
-                    '    { "title": "Wikipedia",        "address": "http://www.wikipedia.org/wiki/%s" },                               \n' +
-                    '    { "title": "Dictionary.com",   "address": "http://dictionary.reference.com/browse/%s" },                      \n' +
-                    '    { "title": "Urban Dictionary", "address": "http://www.urbandictionary.com/define.php?term=%s" },              \n' +
-                    '                                                                                                                  \n' +
-                    '    { "type": "separator" },                                                                                      \n' +
-                    '                                                                                                                  \n' +
-                    '    { "title": "Amazon", "address": "http://www.amazon.com/s/field-keywords=%s" },                                \n' +
-                    '    { "title": "eBay",   "address": "http://www.ebay.com/sch/i.html?_nkw=%s" },                                   \n' +
-                    '                                                                                                                  \n' +
-                    '    { "type": "separator" },                                                                                      \n' +
-                    '                                                                                                                  \n' +
-                    '    { "title": "YouTube", "address": "http://www.youtube.com/results?search_query=%s" },                          \n' +
-                    '                                                                                                                  \n' +
-                    '    { "type": "separator" },                                                                                      \n' +
-                    '                                                                                                                  \n' +
-                    '    { "type": "menu", "title": "to English from...", "entry":                                                     \n' +
-                    '        [                                                                                                         \n' +
-                    '            { "title": "Chinese",  "address": "http://translate.google.com/#zh-CN|en|%s" },                       \n' +
-                    '            { "title": "Japanese", "address": "http://translate.google.com/#ja|en|%s" },                          \n' +
-                    '            { "title": "Korean",   "address": "http://translate.google.com/#ko|en|%s" }                           \n' +
-                    '        ]                                                                                                         \n' +
-                    '    },                                                                                                            \n' +
-                    '    { "type": "menu", "title": "from English to...", "entry":                                                     \n' +
-                    '        [                                                                                                         \n' +
-                    '            { "title": "Chinese (Simplified)",  "address": "http://translate.google.com/#en|zh-CN|%s" },          \n' +
-                    '            { "title": "Chinese (Traditional)", "address": "http://translate.google.com/#en|zh-TW|%s" },          \n' +
-                    '            { "title": "Japanese",              "address": "http://translate.google.com/#en|ja|%s" },             \n' +
-                    '            { "title": "Korean",                "address": "http://translate.google.com/#en|ko|%s" }              \n' +
-                    '        ]                                                                                                         \n' +
-                    '    },                                                                                                            \n' +
-                    '                                                                                                                  \n' +
-                    '    { "type": "separator" },                                                                                      \n' +
-                    '                                                                                                                  \n' +
-                    '    { "type": "menu", "title": "to USD from...", "entry":                                                         \n' +
-                    '        [                                                                                                         \n' +
-                    '            { "title": "CAD: Canadian Dollar",        "address": "http://www.google.com/search?q=%s+CAD+to+USD" },\n' +
-                    '            { "title": "CNY: Chinese Yuan",           "address": "http://www.google.com/search?q=%s+CNY+to+USD" },\n' +
-                    '            { "title": "GBP: British Pound Sterling", "address": "http://www.google.com/search?q=%s+GBP+to+USD" },\n' +
-                    '            { "title": "EUR: Euro",                   "address": "http://www.google.com/search?q=%s+EUR+to+USD" },\n' +
-                    '            { "title": "JPY: Japanese Yen",           "address": "http://www.google.com/search?q=%s+JPY+to+USD" },\n' +
-                    '            { "title": "KRW: South Korean Won",       "address": "http://www.google.com/search?q=%s+KRW+to+USD" } \n' +
-                    '        ]                                                                                                         \n' +
-                    '    },                                                                                                            \n' +
-                    '    { "type": "menu", "title": "from USD to...", "entry":                                                         \n' +
-                    '        [                                                                                                         \n' +
-                    '            { "title": "CAD: Canadian Dollar",        "address": "http://www.google.com/search?q=%s+USD+to+CAD" },\n' +
-                    '            { "title": "CNY: Chinese Yuan",           "address": "http://www.google.com/search?q=%s+USD+to+CNY" },\n' +
-                    '            { "title": "GBP: British Pound Sterling", "address": "http://www.google.com/search?q=%s+USD+to+GBP" },\n' +
-                    '            { "title": "EUR: Euro",                   "address": "http://www.google.com/search?q=%s+USD+to+EUR" },\n' +
-                    '            { "title": "JPY: Japanese Yen",           "address": "http://www.google.com/search?q=%s+USD+to+JPY" },\n' +
-                    '            { "title": "KRW: South Korean Won",       "address": "http://www.google.com/search?q=%s+USD+to+KRW" } \n' +
-                    '        ]                                                                                                         \n' +
-                    '    },                                                                                                            \n' +
-                    '                                                                                                                  \n' +
-                    '    { "type": "separator" },                                                                                      \n' +
-                    '                                                                                                                  \n' +
-                    '    { "type": "menu", "title": "Schemes", "entry":                                                                \n' +
-                    '        [                                                                                                         \n' +
-                    '            { "title": "mailto", "address": "mailto:%s" }                                                         \n' +
-                    '        ]                                                                                                         \n' +
-                    '    }                                                                                                             \n' +
-                    ']                                                                                                                 \n';
-                return d.replace(/ +\n/g, "\n");
             }
-        };
+        }
+    };
+
+    const defaults = `[
+        { "title": "Google", "address": "http://www.google.com/search?q=%s" },
+        { "title": "Bing",   "address": "http://www.bing.com/search?q=%s" },
+        { "title": "Yahoo!", "address": "http://search.yahoo.com/search?p=%s" },
+
+        { "type": "separator" },
+
+        { "title": "Wikipedia",        "address": "http://www.wikipedia.org/wiki/%s" },
+        { "title": "Dictionary.com",   "address": "http://dictionary.reference.com/browse/%s" },
+        { "title": "Urban Dictionary", "address": "http://www.urbandictionary.com/define.php?term=%s" },
+
+        { "type": "separator" },
+
+        { "title": "Amazon", "address": "http://www.amazon.com/s/field-keywords=%s" },
+        { "title": "eBay",   "address": "http://www.ebay.com/sch/i.html?_nkw=%s" },
+
+        { "type": "separator" },
+
+        { "title": "YouTube", "address": "http://www.youtube.com/results?search_query=%s" },
+
+        { "type": "separator" },
+
+        { "type": "menu", "title": "to English from...", "entries":
+            [
+                { "title": "Chinese",  "address": "http://translate.google.com/#zh-CN|en|%s" },
+                { "title": "Japanese", "address": "http://translate.google.com/#ja|en|%s" },
+                { "title": "Korean",   "address": "http://translate.google.com/#ko|en|%s" }
+            ]
+        },
+        { "type": "menu", "title": "from English to...", "entries":
+            [
+                { "title": "Chinese (Simplified)",  "address": "http://translate.google.com/#en|zh-CN|%s" },
+                { "title": "Chinese (Traditional)", "address": "http://translate.google.com/#en|zh-TW|%s" },
+                { "title": "Japanese",              "address": "http://translate.google.com/#en|ja|%s" },
+                { "title": "Korean",                "address": "http://translate.google.com/#en|ko|%s" }
+            ]
+        },
+
+        { "type": "separator" },
+
+        { "type": "menu", "title": "to USD from...", "entries":
+            [
+                { "title": "CAD: Canadian Dollar",        "address": "http://www.google.com/search?q=%s+CAD+to+USD" },
+                { "title": "CNY: Chinese Yuan",           "address": "http://www.google.com/search?q=%s+CNY+to+USD" },
+                { "title": "GBP: British Pound Sterling", "address": "http://www.google.com/search?q=%s+GBP+to+USD" },
+                { "title": "EUR: Euro",                   "address": "http://www.google.com/search?q=%s+EUR+to+USD" },
+                { "title": "JPY: Japanese Yen",           "address": "http://www.google.com/search?q=%s+JPY+to+USD" },
+                { "title": "KRW: South Korean Won",       "address": "http://www.google.com/search?q=%s+KRW+to+USD" }
+            ]
+        },
+        { "type": "menu", "title": "from USD to...", "entries":
+            [
+                { "title": "CAD: Canadian Dollar",        "address": "http://www.google.com/search?q=%s+USD+to+CAD" },
+                { "title": "CNY: Chinese Yuan",           "address": "http://www.google.com/search?q=%s+USD+to+CNY" },
+                { "title": "GBP: British Pound Sterling", "address": "http://www.google.com/search?q=%s+USD+to+GBP" },
+                { "title": "EUR: Euro",                   "address": "http://www.google.com/search?q=%s+USD+to+EUR" },
+                { "title": "JPY: Japanese Yen",           "address": "http://www.google.com/search?q=%s+USD+to+JPY" },
+                { "title": "KRW: South Korean Won",       "address": "http://www.google.com/search?q=%s+USD+to+KRW" }
+            ]
+        },
+
+        { "type": "separator" },
+
+        { "type": "menu", "title": "Schemes", "entries":
+            [
+                { "title": "mailto", "address": "mailto:%s" }
+            ]
+        }
+    ]`.replace(/\n {4}/g, "\n");
 
     document.onreadystatechange = () => {
         if (document.title.includes("Lookup Assistant") && document.readyState !== "loading") {
-            editor().value = storage.get();
-            settings.exec();
+            doc("editor").value = storage.get();
+            settings.parse();
 
             for (const key of Object.keys(button)) {
                 document.getElementById(key).onclick = button[key];
             }
 
             window.onbeforeunload = (event) => {
-                if (editor().value !== storage.get()) {
+                if (doc("editor").value !== storage.get()) {
                     event.preventDefault();
                     event.returnValue = "There are unsaved changes!";
                 }
