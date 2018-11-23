@@ -2,7 +2,7 @@
     "use strict";
 
     const doc = (id) => document.getElementById(id);
-    
+
     const storage = {
         key: "LUA_Settings",
         get: () => localStorage.getItem(storage.key),
@@ -174,6 +174,12 @@
             ]
         }
     ]`.replace(/\n {4}/g, "\n");
+
+    // initialize storage and settings on installation
+    if (storage.get() === null) {
+        storage.set(defaults);
+        settings._parse(JSON.parse(defaults));
+    }
 
     document.onreadystatechange = () => {
         if (document.title.includes("Lookup Assistant") && document.readyState !== "loading") {
