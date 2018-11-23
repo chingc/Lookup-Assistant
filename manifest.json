@@ -1,18 +1,21 @@
 {
-    "name": "Lookup Assistant",
-    "version": "2.0",
     "manifest_version": 2,
+
+    "name": "Lookup Assistant",
+    "version": "2.1.0",
 
     "description": "Lookup highlighted text.",
     "icons": {
-        "16": "assets/icon_16.png",
+        "128": "assets/icon_128.png",
         "48": "assets/icon_48.png",
-        "128": "assets/icon_128.png"
+        "16": "assets/icon_16.png"
     },
 
     "background": {
-        "scripts": ["scripts.js", "background.js"]
+        "scripts": ["scripts.js"]
     },
+
     "options_page": "options.html",
-    "permissions": ["contextMenus", "tabs"]
+
+    "permissions": ["contextMenus"]
 }
