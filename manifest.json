@@ -2,7 +2,7 @@
     "manifest_version": 2,
 
     "name": "Lookup Assistant",
-    "version": "2.1.1",
+    "version": "2.1.2",
 
     "description": "Lookup highlighted text.",
     "icons": {

@@ -1,7 +1,7 @@
 (function () {
     "use strict";
 
-    const doc = (id) => document.getElementById(id);
+    const getElement = (id) => document.getElementById(id);
 
     const storage = {
         key: "LUA_Settings",
@@ -13,20 +13,20 @@
         save: () => {
             if (confirm("Save settings?")) {
                 if (settings.parse()) {
-                    storage.set(doc("editor").value);
+                    storage.set(getElement("editor").value);
                 }
             }
         },
         load: () => {
             if (confirm("Load saved settings?")) {
-                doc("editor").value = storage.get();
+                getElement("editor").value = storage.get();
                 settings.parse();
             }
         },
         default: () => {
             if (confirm("Load default settings?")) {
                 storage.set(defaults);
-                doc("editor").value = defaults;
+                getElement("editor").value = defaults;
                 settings.parse();
             }
         }
@@ -66,7 +66,7 @@
         parse: () => {
             try {
                 menu.clear();
-                let text = doc("editor").value;
+                let text = getElement("editor").value;
                 if (!text || settings._parse(JSON.parse(text))) {
                     return true;
                 }
@@ -175,23 +175,30 @@
         }
     ]`.replace(/\n {4}/g, "\n");
 
-    // initialize storage and settings on installation
+    // initialization when extension is installed
     if (storage.get() === null) {
         storage.set(defaults);
         settings._parse(JSON.parse(defaults));
+    } else {
+        // initialization when chrome starts
+        if (!Object.keys(menu.id).length) {
+            settings._parse(JSON.parse(storage.get()));
+            menu.id._initialized_ = true;
+        }
     }
 
+    // options page
     document.onreadystatechange = () => {
         if (document.title.includes("Lookup Assistant") && document.readyState !== "loading") {
-            doc("editor").value = storage.get();
+            getElement("editor").value = storage.get();
             settings.parse();
 
             for (const key of Object.keys(button)) {
-                document.getElementById(key).onclick = button[key];
+                getElement(key).onclick = button[key];
             }
 
             window.onbeforeunload = (event) => {
-                if (doc("editor").value !== storage.get()) {
+                if (getElement("editor").value !== storage.get()) {
                     event.preventDefault();
                     event.returnValue = "There are unsaved changes!";
                 }
