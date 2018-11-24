@@ -106,9 +106,10 @@
     };
 
     const defaults = `[
-        { "title": "Google", "address": "http://www.google.com/search?q=%s" },
-        { "title": "Bing",   "address": "http://www.bing.com/search?q=%s" },
-        { "title": "Yahoo!", "address": "http://search.yahoo.com/search?p=%s" },
+        { "title": "DuckDuckGo", "address": "https://duckduckgo.com/?q=%s" },
+        { "title": "Google",     "address": "http://www.google.com/search?q=%s" },
+        { "title": "Bing",       "address": "http://www.bing.com/search?q=%s" },
+        { "title": "Yahoo!",     "address": "http://search.yahoo.com/search?p=%s" },
 
         { "type": "separator" },
 
@@ -127,50 +128,33 @@
 
         { "type": "separator" },
 
-        { "type": "menu", "title": "to English from...", "entries":
+        { "type": "menu", "title": "Currency", "entries":
             [
-                { "title": "Chinese",  "address": "http://translate.google.com/#zh-CN|en|%s" },
-                { "title": "Japanese", "address": "http://translate.google.com/#ja|en|%s" },
-                { "title": "Korean",   "address": "http://translate.google.com/#ko|en|%s" }
-            ]
-        },
-        { "type": "menu", "title": "from English to...", "entries":
-            [
-                { "title": "Chinese (Simplified)",  "address": "http://translate.google.com/#en|zh-CN|%s" },
-                { "title": "Chinese (Traditional)", "address": "http://translate.google.com/#en|zh-TW|%s" },
-                { "title": "Japanese",              "address": "http://translate.google.com/#en|ja|%s" },
-                { "title": "Korean",                "address": "http://translate.google.com/#en|ko|%s" }
-            ]
-        },
-
-        { "type": "separator" },
-
-        { "type": "menu", "title": "to USD from...", "entries":
-            [
-                { "title": "CAD: Canadian Dollar",        "address": "http://www.google.com/search?q=%s+CAD+to+USD" },
-                { "title": "CNY: Chinese Yuan",           "address": "http://www.google.com/search?q=%s+CNY+to+USD" },
-                { "title": "GBP: British Pound Sterling", "address": "http://www.google.com/search?q=%s+GBP+to+USD" },
-                { "title": "EUR: Euro",                   "address": "http://www.google.com/search?q=%s+EUR+to+USD" },
-                { "title": "JPY: Japanese Yen",           "address": "http://www.google.com/search?q=%s+JPY+to+USD" },
-                { "title": "KRW: South Korean Won",       "address": "http://www.google.com/search?q=%s+KRW+to+USD" }
-            ]
-        },
-        { "type": "menu", "title": "from USD to...", "entries":
-            [
-                { "title": "CAD: Canadian Dollar",        "address": "http://www.google.com/search?q=%s+USD+to+CAD" },
-                { "title": "CNY: Chinese Yuan",           "address": "http://www.google.com/search?q=%s+USD+to+CNY" },
-                { "title": "GBP: British Pound Sterling", "address": "http://www.google.com/search?q=%s+USD+to+GBP" },
-                { "title": "EUR: Euro",                   "address": "http://www.google.com/search?q=%s+USD+to+EUR" },
-                { "title": "JPY: Japanese Yen",           "address": "http://www.google.com/search?q=%s+USD+to+JPY" },
-                { "title": "KRW: South Korean Won",       "address": "http://www.google.com/search?q=%s+USD+to+KRW" }
+                { "title": "CAD -> USD", "address": "http://www.google.com/search?q=%s+CAD+to+USD" },
+                { "title": "CNY -> USD", "address": "http://www.google.com/search?q=%s+CNY+to+USD" },
+                { "title": "EUR -> USD", "address": "http://www.google.com/search?q=%s+EUR+to+USD" },
+                { "title": "GBP -> USD", "address": "http://www.google.com/search?q=%s+GBP+to+USD" },
+                { "title": "JPY -> USD", "address": "http://www.google.com/search?q=%s+JPY+to+USD" },
+                { "title": "KRW -> USD", "address": "http://www.google.com/search?q=%s+KRW+to+USD" },
+                { "title": "USD -> CAD", "address": "http://www.google.com/search?q=%s+USD+to+CAD" },
+                { "title": "USD -> CNY", "address": "http://www.google.com/search?q=%s+USD+to+CNY" },
+                { "title": "USD -> EUR", "address": "http://www.google.com/search?q=%s+USD+to+EUR" },
+                { "title": "USD -> GBP", "address": "http://www.google.com/search?q=%s+USD+to+GBP" },
+                { "title": "USD -> JPY", "address": "http://www.google.com/search?q=%s+USD+to+JPY" },
+                { "title": "USD -> KRW", "address": "http://www.google.com/search?q=%s+USD+to+KRW" }
             ]
         },
 
         { "type": "separator" },
 
-        { "type": "menu", "title": "Schemes", "entries":
+        { "type": "menu", "title": "Translate", "entries":
             [
-                { "title": "mailto", "address": "mailto:%s" }
+                { "title": "CN -> US", "address": "http://translate.google.com/#zh-CN|en|%s" },
+                { "title": "JP -> US", "address": "http://translate.google.com/#ja|en|%s" },
+                { "title": "KR -> US", "address": "http://translate.google.com/#ko|en|%s" },
+                { "title": "US -> CN", "address": "http://translate.google.com/#en|zh-CN|%s" },
+                { "title": "US -> JP", "address": "http://translate.google.com/#en|ja|%s" },
+                { "title": "US -> KR", "address": "http://translate.google.com/#en|ko|%s" }
             ]
         }
     ]`.replace(/\n {4}/g, "\n");
